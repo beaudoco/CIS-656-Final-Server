@@ -1,28 +1,48 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.LocalDateTime;
 
 public class ProviderApp {
-    static int clientCount = 0;
 
-    public static void main(String[] args) throws IOException {
+
+    public static void main(String[] args) {
         new ProviderApp().begin();
     }
 
-    private void begin() throws IOException {
+    private void begin() {
+        System.out.println("The server is running!");
+        new ServerWait().start();
+    } 
+}
+
+class ServerWait extends Thread {
+    static int clientCount = 0;
+    public ServerWait() {
+
+    }
+
+    public void run() {
         int maxPendingConn = 10;
         final int port = 4444;
-        ServerSocket servsock = new ServerSocket(port, maxPendingConn);
-        System.out.println("The server is running!");
-      
+        ServerSocket servsock = null;
+        try {
+            servsock = new ServerSocket(port, maxPendingConn);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         while (true) {
-            Socket sock = servsock.accept();
+            Socket sock = null;
+            try {
+                sock = servsock.accept();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             clientCount++;
 
             new ServerThread(sock, clientCount).start();
         }
-    } 
+    }
 }
 
 
