@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class ProviderApp {
 
@@ -12,6 +13,13 @@ public class ProviderApp {
     private void begin() {
         System.out.println("The server is running!");
         new ServerWait().start();
+
+        while (true) {
+            System.out.println("Ask For Clients:");
+            Scanner in = new Scanner(System.in);
+            String s = in.nextLine();
+            System.out.println("You said: " + s);
+        }
     } 
 }
 
