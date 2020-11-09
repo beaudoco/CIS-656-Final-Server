@@ -62,6 +62,7 @@ class ServerThread extends Thread {
     protected Socket sock;
     protected int clientNumber;
     private Response response = new ResponseImpl();
+    ClientList clientList = new ClientList();
 
     public ServerThread(Socket clientSocket, int clientNumber) {
         this.sock = clientSocket;
@@ -101,6 +102,7 @@ class ServerThread extends Thread {
                         if (tmpString.toLowerCase().equals("time")) {
                             request = response.timeString();
                         } else if (tmpString.isEmpty()) {
+                            System.out.println(clientList.getClients().get(0));
                             hasValue = false;
                             sock.close();
                             System.out.println("Socket closed!");

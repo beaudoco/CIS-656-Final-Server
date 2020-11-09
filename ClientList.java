@@ -14,4 +14,8 @@ public class ClientList implements Serializable {
         this.clientList.add(val);
     }
 
+    public void removeClient(String val) {
+        this.clientList.remove(val);
+    }
+
 }
