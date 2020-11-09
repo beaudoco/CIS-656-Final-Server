@@ -48,10 +48,12 @@ class ServerWait extends Thread {
                 e.printStackTrace();
             }
 
-            clientList.addClient(sock.getInetAddress().getHostAddress());
+            String clientName = sock.getInetAddress().getHostAddress();
+
+            clientList.addClient(clientName);
             clientCount++;
 
-            new ServerThread(sock, clientCount, clientList).start();
+            new ServerThread(sock, clientCount, clientList, clientName).start();
             System.out.println(clientList.getClients().get(0));
         }
     }
@@ -63,11 +65,13 @@ class ServerThread extends Thread {
     protected int clientNumber;
     private Response response = new ResponseImpl();
     ClientList clientList;
+    String clientName;
 
-    public ServerThread(Socket clientSocket, int clientNumber, ClientList clientList) {
+    public ServerThread(Socket clientSocket, int clientNumber, ClientList clientList, String clientName) {
         this.sock = clientSocket;
         this.clientNumber = clientNumber;
         this.clientList = clientList;
+        this.clientName = clientName;
     }
 
     public void run() {
@@ -103,7 +107,8 @@ class ServerThread extends Thread {
                         if (tmpString.toLowerCase().equals("time")) {
                             request = response.timeString();
                         } else if (tmpString.isEmpty()) {
-                            System.out.println(clientList.getClients().isEmpty());
+//                            System.out.println(clientList.getClients().isEmpty());
+                            clientList.removeClient(clientName);
                             hasValue = false;
                             sock.close();
                             System.out.println("Socket closed!");
