@@ -102,7 +102,7 @@ class ServerThread extends Thread {
                         if (tmpString.toLowerCase().equals("time")) {
                             request = response.timeString();
                         } else if (tmpString.isEmpty()) {
-                            System.out.println(clientList.getClients().get(0));
+                            System.out.println(clientList.getClients().isEmpty());
                             hasValue = false;
                             sock.close();
                             System.out.println("Socket closed!");
