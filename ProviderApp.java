@@ -51,7 +51,7 @@ class ServerWait extends Thread {
             clientList.addClient(sock.getInetAddress().getHostAddress());
             clientCount++;
 
-            new ServerThread(sock, clientCount).start();
+            new ServerThread(sock, clientCount, clientList).start();
             System.out.println(clientList.getClients().get(0));
         }
     }
@@ -62,11 +62,12 @@ class ServerThread extends Thread {
     protected Socket sock;
     protected int clientNumber;
     private Response response = new ResponseImpl();
-    ClientList clientList = new ClientList();
+    ClientList clientList;
 
-    public ServerThread(Socket clientSocket, int clientNumber) {
+    public ServerThread(Socket clientSocket, int clientNumber, ClientList clientList) {
         this.sock = clientSocket;
         this.clientNumber = clientNumber;
+        this.clientList = clientList;
     }
 
     public void run() {
