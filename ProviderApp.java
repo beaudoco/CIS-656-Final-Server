@@ -33,6 +33,7 @@ class ServerWait extends Thread {
         int maxPendingConn = 10;
         final int port = 4444;
         ServerSocket servsock = null;
+        ClientList clientList = new ClientList();
         try {
             servsock = new ServerSocket(port, maxPendingConn);
         } catch (IOException e) {
@@ -46,9 +47,12 @@ class ServerWait extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            clientList.addClient(sock.getInetAddress().getHostAddress());
             clientCount++;
 
             new ServerThread(sock, clientCount).start();
+            System.out.println(clientList.getClients().get(0));
         }
     }
 }
