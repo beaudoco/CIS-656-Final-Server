@@ -2,8 +2,8 @@ import java.time.LocalDateTime;
 
 public class ResponseImpl implements Response {
     @Override
-    public String welcomeMessage(int clientNumber) {
-        return ("Hello, you are client #"+ clientNumber + "\r\n");
+    public String welcomeMessage() {
+        return ("Hello, you are the host client \r\n");
     }
 
     @Override

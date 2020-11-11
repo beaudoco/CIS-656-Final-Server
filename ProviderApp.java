@@ -2,6 +2,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ProviderApp {
 
@@ -54,6 +55,7 @@ class ServerWait extends Thread {
             clientCount++;
 
             new ServerThread(sock, clientCount, clientList, clientName).start();
+
             System.out.println(clientList.getClients().get(0) + " size: " + clientList.getClients().size());
         }
     }
@@ -86,50 +88,55 @@ class ServerThread extends Thread {
         boolean hasValue = true;
 
         try {
-            out.writeObject(response.welcomeMessage(clientNumber));
-            out.flush();
+            if (clientList.getClients().size() == 0) {
+                out.writeObject(response.welcomeMessage());
+                out.flush();
+            } else {
+                int randomNum = ThreadLocalRandom.current().nextInt(0, clientList.getClients().size());
+                out.writeObject(clientList.getClients().get(randomNum));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        while(hasValue) {
-            String request = null;
-            try {
-                ObjectInputStream isr = new ObjectInputStream(sock.getInputStream());
-                Object object = isr.readObject();
-
-                if (object instanceof  StringRpcRequest) {
-                    StringRpcRequest stringRpcRequest = (StringRpcRequest) object;
-
-                    String tmpString = stringRpcRequest.getString();
-
-                    if ("request".equals(stringRpcRequest.getMethod())) {
-                        if (tmpString.toLowerCase().equals("time")) {
-                            request = response.timeString();
-                        } else if (tmpString.isEmpty()) {
-//                            System.out.println(clientList.getClients().isEmpty());
-                            clientList.removeClient(clientName);
-                            hasValue = false;
-                            sock.close();
-                            System.out.println("Socket closed!");
-                        } else {
-                            request = response.capitalizeString(tmpString);
-                        }
-
-                        if (hasValue) {
-                            out = new ObjectOutputStream(sock.getOutputStream());
-                            out.writeObject(request);
-                            out.flush();
-                        }
-                    }
-
-                } else {
-                    System.out.println("error!");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("error!");
-            }
-        }
+//        while(hasValue) {
+//            String request = null;
+//            try {
+//                ObjectInputStream isr = new ObjectInputStream(sock.getInputStream());
+//                Object object = isr.readObject();
+//
+//                if (object instanceof  StringRpcRequest) {
+//                    StringRpcRequest stringRpcRequest = (StringRpcRequest) object;
+//
+//                    String tmpString = stringRpcRequest.getString();
+//
+//                    if ("request".equals(stringRpcRequest.getMethod())) {
+//                        if (tmpString.toLowerCase().equals("time")) {
+//                            request = response.timeString();
+//                        } else if (tmpString.isEmpty()) {
+////                            System.out.println(clientList.getClients().isEmpty());
+//                            clientList.removeClient(clientName);
+//                            hasValue = false;
+//                            sock.close();
+//                            System.out.println("Socket closed!");
+//                        } else {
+//                            request = response.capitalizeString(tmpString);
+//                        }
+//
+//                        if (hasValue) {
+//                            out = new ObjectOutputStream(sock.getOutputStream());
+//                            out.writeObject(request);
+//                            out.flush();
+//                        }
+//                    }
+//
+//                } else {
+//                    System.out.println("error!");
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                System.out.println("error!");
+//            }
+//        }
     }
 }

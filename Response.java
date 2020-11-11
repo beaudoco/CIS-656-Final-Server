@@ -1,5 +1,5 @@
 public interface Response {
-    String welcomeMessage(int clientNumber);
+    String welcomeMessage();
     String capitalizeString(String input);
     String timeString();
 }
