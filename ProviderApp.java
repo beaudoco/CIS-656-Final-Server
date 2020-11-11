@@ -1,4 +1,5 @@
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -51,8 +52,7 @@ class ServerWait extends Thread {
                 e.printStackTrace();
             }
 
-            System.out.println(sock);
-            System.out.println(servsock);
+            System.out.println(sock.getRemoteSocketAddress().toString());
 
             String clientName = sock.getRemoteSocketAddress().toString();
 
