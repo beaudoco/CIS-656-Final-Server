@@ -1,6 +1,8 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -88,12 +90,15 @@ class ServerThread extends Thread {
         boolean hasValue = true;
 
         try {
-            if (clientList.getClients().size() == 0) {
+            if (clientList.getClients().size() == 1) {
                 out.writeObject(response.welcomeMessage());
                 out.flush();
             } else {
-                int randomNum = ThreadLocalRandom.current().nextInt(0, clientList.getClients().size());
-                out.writeObject(clientList.getClients().get(randomNum));
+                List<String> tmpClientList = new ArrayList<>();
+                tmpClientList.addAll(clientList.getClients());
+                tmpClientList.remove(clientName);
+                int randomNum = ThreadLocalRandom.current().nextInt(0, tmpClientList.size());
+                out.writeObject(tmpClientList.get(randomNum));
             }
         } catch (IOException e) {
             e.printStackTrace();
