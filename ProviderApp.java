@@ -94,11 +94,11 @@ class ServerThread extends Thread {
                 out.writeObject(response.welcomeMessage());
                 out.flush();
             } else {
-                List<String> tmpClientList = new ArrayList<>();
-                tmpClientList.addAll(clientList.getClients());
-                tmpClientList.remove(clientName);
-                int randomNum = ThreadLocalRandom.current().nextInt(0, tmpClientList.size());
-                out.writeObject(tmpClientList.get(randomNum));
+                //List<String> tmpClientList = new ArrayList<>();
+                //tmpClientList.addAll(clientList.getClients());
+                //tmpClientList.remove(clientName);
+                int randomNum = ThreadLocalRandom.current().nextInt(0, clientList.getClients().size());
+                out.writeObject(clientList.getClients().get(0));
             }
         } catch (IOException e) {
             e.printStackTrace();
