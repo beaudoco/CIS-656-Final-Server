@@ -49,7 +49,7 @@ class ServerWait extends Thread {
                 e.printStackTrace();
             }
 
-            String clientName = sock.getInetAddress().getHostAddress();
+            String clientName = sock.getRemoteSocketAddress().toString();
 
             clientList.addClient(clientName);
             clientCount++;
