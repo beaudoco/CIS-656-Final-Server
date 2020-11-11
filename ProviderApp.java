@@ -51,6 +51,9 @@ class ServerWait extends Thread {
                 e.printStackTrace();
             }
 
+            System.out.println(sock);
+            System.out.println(servsock);
+
             String clientName = sock.getRemoteSocketAddress().toString();
 
             clientList.addClient(clientName);
