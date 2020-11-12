@@ -1,5 +1,4 @@
 import java.io.*;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -104,44 +103,41 @@ class ServerThread extends Thread {
             e.printStackTrace();
         }
 
-//        while(hasValue) {
-//            String request = null;
-//            try {
-//                ObjectInputStream isr = new ObjectInputStream(sock.getInputStream());
-//                Object object = isr.readObject();
-//
-//                if (object instanceof  StringRpcRequest) {
-//                    StringRpcRequest stringRpcRequest = (StringRpcRequest) object;
-//
-//                    String tmpString = stringRpcRequest.getString();
-//
-//                    if ("request".equals(stringRpcRequest.getMethod())) {
-//                        if (tmpString.toLowerCase().equals("time")) {
-//                            request = response.timeString();
-//                        } else if (tmpString.isEmpty()) {
-////                            System.out.println(clientList.getClients().isEmpty());
-//                            clientList.removeClient(clientName);
-//                            hasValue = false;
-//                            sock.close();
-//                            System.out.println("Socket closed!");
-//                        } else {
-//                            request = response.capitalizeString(tmpString);
-//                        }
-//
-//                        if (hasValue) {
-//                            out = new ObjectOutputStream(sock.getOutputStream());
-//                            out.writeObject(request);
-//                            out.flush();
-//                        }
-//                    }
-//
-//                } else {
-//                    System.out.println("error!");
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                System.out.println("error!");
-//            }
-//        }
+        while(hasValue) {
+            String request = null;
+            try {
+                ObjectInputStream isr = new ObjectInputStream(sock.getInputStream());
+                Object object = isr.readObject();
+
+                if (object instanceof  StringRpcRequest) {
+                    StringRpcRequest stringRpcRequest = (StringRpcRequest) object;
+
+                    String tmpString = stringRpcRequest.getString();
+
+                    if ("request".equals(stringRpcRequest.getMethod())) {
+                        if (tmpString.isEmpty()) {
+//                            System.out.println(clientList.getClients().isEmpty());
+                            clientList.removeClient(clientName);
+                            hasValue = false;
+                            sock.close();
+                            System.out.println("Socket closed!");
+                        }
+                        request = tmpString;
+
+                        if (hasValue) {
+                            out = new ObjectOutputStream(sock.getOutputStream());
+                            out.writeObject(request);
+                            out.flush();
+                        }
+                    }
+
+                } else {
+                    System.out.println("error!");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("error!");
+            }
+        }
     }
 }
