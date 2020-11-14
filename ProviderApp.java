@@ -191,8 +191,8 @@ class ServerThread extends Thread {
                     System.out.println("error!");
                 }
             } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("error!");
+//                e.printStackTrace();
+//                System.out.println("error!");
             }
         }
     }
