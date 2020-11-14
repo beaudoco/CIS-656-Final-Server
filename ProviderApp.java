@@ -14,22 +14,30 @@ public class ProviderApp {
     }
 
     private void begin() {
+        // DECLARE VARIABLES
         ClientList clientList = new ClientList();
         List<Socket> sockList = new ArrayList<>();
+
+        // WE START THE SERVER
         System.out.println("The server is running!");
         StringRpcRequest stringRpcRequest;
         ObjectOutputStream out;
         new ServerWait(clientList, sockList).start();
 
+        // RUN FOR THE APP
         while (true) {
+            // CHECK FOR INPUT
             System.out.println("Ask For Clients:");
             Scanner in = new Scanner(System.in);
             String s = in.nextLine();
             System.out.println("You said: " + s);
+
+            // PRINT THE LIST OF CLIENTS
             for (int i = 0; i < clientList.getClients().size(); i++) {
                 System.out.println(clientList.getClients().get(i));
             }
 
+            // IF IT IS TIME TO EXIT
             if(s.isEmpty()) {
                 for (int i = 0; i < sockList.size(); i++) {
                     try {
@@ -48,6 +56,7 @@ public class ProviderApp {
             }
         }
     }
+
     // CONTROLS COMMUNICATION BETWEEN MACHINES
     private StringRpcRequest generateServerRequest(String val) {
         StringRpcRequest stringRpcRequest = new StringRpcRequest();
@@ -61,6 +70,8 @@ class ServerWait extends Thread {
     static int clientCount = 0;
     ClientList clientList;
     List<Socket> sockList;
+
+    // SET CLASS VARS TO WHAT IS PASSED IN
     public ServerWait(ClientList clientList, List<Socket> sockList) {
         this.clientList = clientList;
         this.sockList = sockList;
@@ -71,12 +82,14 @@ class ServerWait extends Thread {
         final int port = 4444;
         ServerSocket servsock = null;
 
+        // LISTEN FOR A SERVER CONNECTION
         try {
             servsock = new ServerSocket(port, maxPendingConn);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        // WHILE THE SERVER IS ON CONNECT NEW CLIENTS
         while (true) {
             Socket sock = null;
             try {
@@ -85,13 +98,15 @@ class ServerWait extends Thread {
                 e.printStackTrace();
             }
 
-
+            // ADD THE CLIENT TO OUR LIST
             clientList.addClient(sock.getRemoteSocketAddress().toString());
             clientCount++;
 
+            // SET UP NEW SOCKET FOR CLIENT
             new ServerThread(sock, clientCount, clientList, sock.getRemoteSocketAddress().toString()).start();
             sockList.add(sock);
 
+            // SHOW HOW MANY CLIENTS WE HAVE
             System.out.println("List size: " + clientList.getClients().size());
         }
     }
@@ -99,12 +114,14 @@ class ServerWait extends Thread {
 
 
 class ServerThread extends Thread {
+    // DECLARE VARIABLES
     protected Socket sock;
     protected int clientNumber;
     private Response response = new ResponseImpl();
     ClientList clientList;
     String clientName;
 
+    // SET CLASS VARS TO WHAT IS PASSED IN
     public ServerThread(Socket clientSocket, int clientNumber, ClientList clientList, String clientName) {
         this.sock = clientSocket;
         this.clientNumber = clientNumber;
@@ -123,6 +140,7 @@ class ServerThread extends Thread {
 
         boolean hasValue = true;
 
+        // RESPOND TO USERS BASED ON HOW MANY CLIENTS ARE ASSOCIATED WITH THE MACHINE
         try {
             if (clientList.getClients().size() == 1) {
                 out.writeObject(response.welcomeMessage());
@@ -138,6 +156,7 @@ class ServerThread extends Thread {
             e.printStackTrace();
         }
 
+        // CHECK FOR WHAT HAS BEEN SENT TO SERVER AND RESPOND
         while(hasValue) {
             String request = null;
             try {
@@ -149,6 +168,7 @@ class ServerThread extends Thread {
 
                     String tmpString = stringRpcRequest.getString();
 
+                    // CLOSE SOCKET
                     if ("request".equals(stringRpcRequest.getMethod())) {
                         if (tmpString.isEmpty()) {
                             clientList.removeClient(clientName);
