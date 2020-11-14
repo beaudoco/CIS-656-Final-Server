@@ -44,6 +44,7 @@ public class ProviderApp {
 
                     //sockList.remove(sockList.get(i));
                 }
+                System.exit(0);
             }
         }
     }
