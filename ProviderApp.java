@@ -14,29 +14,33 @@ public class ProviderApp {
     }
 
     private void begin() {
+        ClientList clientList = new ClientList();
         System.out.println("The server is running!");
-        new ServerWait().start();
+        new ServerWait(clientList).start();
 
         while (true) {
             System.out.println("Ask For Clients:");
             Scanner in = new Scanner(System.in);
             String s = in.nextLine();
             System.out.println("You said: " + s);
+            for (int i = 0; i < clientList.getClients().size(); i++) {
+                System.out.println(clientList.getClients().get(i));
+            }
         }
     } 
 }
 
 class ServerWait extends Thread {
     static int clientCount = 0;
-    public ServerWait() {
-
+    ClientList clientList;
+    public ServerWait(ClientList clientList) {
+        this.clientList = clientList;
     }
 
     public void run() {
         int maxPendingConn = 10;
         final int port = 4444;
         ServerSocket servsock = null;
-        ClientList clientList = new ClientList();
         try {
             servsock = new ServerSocket(port, maxPendingConn);
         } catch (IOException e) {
@@ -116,7 +120,6 @@ class ServerThread extends Thread {
 
                     if ("request".equals(stringRpcRequest.getMethod())) {
                         if (tmpString.isEmpty()) {
-//                            System.out.println(clientList.getClients().isEmpty());
                             clientList.removeClient(clientName);
                             hasValue = false;
                             sock.close();
