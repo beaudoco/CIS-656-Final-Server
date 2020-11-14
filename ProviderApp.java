@@ -174,7 +174,7 @@ class ServerThread extends Thread {
                             clientList.removeClient(clientName);
                             hasValue = false;
                             sock.close();
-                            System.out.println("Socket closed!");
+                            System.out.println("Socket closed: " + clientName + " disconnected!");
                         }
                         request = tmpString;
 
