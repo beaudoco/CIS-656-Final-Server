@@ -15,8 +15,11 @@ public class ProviderApp {
 
     private void begin() {
         ClientList clientList = new ClientList();
+        List<Socket> sockList = new ArrayList<>();
         System.out.println("The server is running!");
-        new ServerWait(clientList).start();
+        StringRpcRequest stringRpcRequest;
+        ObjectOutputStream out;
+        new ServerWait(clientList, sockList).start();
 
         while (true) {
             System.out.println("Ask For Clients:");
@@ -26,21 +29,47 @@ public class ProviderApp {
             for (int i = 0; i < clientList.getClients().size(); i++) {
                 System.out.println(clientList.getClients().get(i));
             }
+
+            if(s.isEmpty()) {
+                for (int i = 0; i < sockList.size(); i++) {
+                    try {
+                        out = new ObjectOutputStream(sockList.get(i).getOutputStream());
+                        stringRpcRequest = generateServerRequest(s);
+                        out.writeObject(stringRpcRequest);
+                        out.flush();
+                        sockList.get(i).close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    //sockList.remove(sockList.get(i));
+                }
+            }
         }
-    } 
+    }
+    // CONTROLS COMMUNICATION BETWEEN MACHINES
+    private StringRpcRequest generateServerRequest(String val) {
+        StringRpcRequest stringRpcRequest = new StringRpcRequest();
+        stringRpcRequest.setString(val);
+        stringRpcRequest.setMethod("request");
+        return stringRpcRequest;
+    }
 }
 
 class ServerWait extends Thread {
     static int clientCount = 0;
     ClientList clientList;
-    public ServerWait(ClientList clientList) {
+    List<Socket> sockList;
+    public ServerWait(ClientList clientList, List<Socket> sockList) {
         this.clientList = clientList;
+        this.sockList = sockList;
     }
 
     public void run() {
         int maxPendingConn = 10;
         final int port = 4444;
         ServerSocket servsock = null;
+
         try {
             servsock = new ServerSocket(port, maxPendingConn);
         } catch (IOException e) {
@@ -60,6 +89,7 @@ class ServerWait extends Thread {
             clientCount++;
 
             new ServerThread(sock, clientCount, clientList, sock.getRemoteSocketAddress().toString()).start();
+            sockList.add(sock);
 
             System.out.println("List size: " + clientList.getClients().size());
         }
