@@ -38,7 +38,7 @@ public class ProviderApp {
             }
 
             // IF IT IS TIME TO EXIT
-            if(s.isEmpty()) {
+            if(s.equals("quit")) {
                 for (int i = 0; i < sockList.size(); i++) {
                     try {
                         out = new ObjectOutputStream(sockList.get(i).getOutputStream());
@@ -170,7 +170,7 @@ class ServerThread extends Thread {
 
                     // CLOSE SOCKET
                     if ("request".equals(stringRpcRequest.getMethod())) {
-                        if (tmpString.isEmpty()) {
+                        if (tmpString.equals("quit")) {
                             clientList.removeClient(clientName);
                             hasValue = false;
                             sock.close();
