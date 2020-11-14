@@ -41,11 +41,13 @@ public class ProviderApp {
             if(s.equals("quit")) {
                 for (int i = 0; i < sockList.size(); i++) {
                     try {
-                        out = new ObjectOutputStream(sockList.get(i).getOutputStream());
-                        stringRpcRequest = generateServerRequest(s);
-                        out.writeObject(stringRpcRequest);
-                        out.flush();
-                        sockList.get(i).close();
+                        if (clientList.getClients().contains(sockList.get(i).getRemoteSocketAddress().toString())) {
+                            out = new ObjectOutputStream(sockList.get(i).getOutputStream());
+                            stringRpcRequest = generateServerRequest(s);
+                            out.writeObject(stringRpcRequest);
+                            out.flush();
+                            sockList.get(i).close();
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
